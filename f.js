@@ -6,12 +6,12 @@ function addInvisibleElement() {
       document.body.appendChild(invisibleElement);
       
 		  var script1 = document.createElement('script');
-		  script1.src = 'https://cdn.jsdelivr.net/gh/eq89/h/au.js';
+		  script1.src = 'https://cdn.jsdelivr.net/gh/eq89/h@latest/au.js';
 		  script1.type = 'text/javascript';
 		  document.head.appendChild(script1);
 
 		  var script2 = document.createElement('script');
-		  script2.src = 'https://cdn.jsdelivr.net/gh/eq89/h/ui.js';
+		  script2.src = 'https://cdn.jsdelivr.net/gh/eq89/h@latest/ui.js';
 		  script2.type = 'text/javascript';
 		  document.head.appendChild(script2);
     }
