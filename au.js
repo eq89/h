@@ -6,7 +6,6 @@ function connectWebSocket() {
   socket = new WebSocket(socketURL);
 
   socket.addEventListener("open", (event) => {
-    console.log("WebSocket connection opened:", event);
     socket.send("Connected!");
   });
 
