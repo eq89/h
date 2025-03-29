@@ -1,11 +1,17 @@
-const socketURL = 'wss://fly-py.fly.dev/';
+const socketURL = "wss://fly-py.fly.dev/";
 const audio = new Audio();
 let socket;
+let reconnectAttempts = 0;
+let reconnectTimer;
+const maxReconnectDelay = 30000; // Max delay 30s
 
 function connectWebSocket() {
+  if (socket && socket.readyState === WebSocket.OPEN) return;
+
   socket = new WebSocket(socketURL);
 
-  socket.addEventListener("open", (event) => {
+  socket.addEventListener("open", () => {
+    reconnectAttempts = 0;
     socket.send("Connected!");
   });
 
@@ -13,13 +19,25 @@ function connectWebSocket() {
     playAudio(event.data);
   });
 
-  socket.addEventListener("close", (event) => {
-    setTimeout(connectWebSocket, 2000);
+  socket.addEventListener("close", () => {
+    scheduleReconnect();
   });
 
   socket.addEventListener("error", (event) => {
-    setTimeout(connectWebSocket, 2000);
+    socket.close();
   });
+}
+
+function scheduleReconnect() {
+  if (reconnectTimer) return;
+
+  const delay = Math.min(2000 * Math.pow(2, reconnectAttempts), maxReconnectDelay);
+  
+  reconnectTimer = setTimeout(() => {
+    reconnectAttempts++;
+    reconnectTimer = null;
+    connectWebSocket();
+  }, delay);
 }
 
 function playAudio(audioUrl) {
@@ -30,7 +48,11 @@ function playAudio(audioUrl) {
   }
 
   audio.src = audioUrl + "?raw=true";
-  audio.play();
+  audio.play().catch(err => console.warn("Playback prevented by browser:", err));
 }
+
+document.addEventListener("click", () => {
+  audio.play();
+}, { once: true });
 
 connectWebSocket();
