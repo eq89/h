@@ -11,6 +11,7 @@ function connectWebSocket() {
   socket = new WebSocket(socketURL);
 
   socket.addEventListener("open", () => {
+    console.log("WebSocket connected.");
     reconnectAttempts = 0;
     socket.send("Connected!");
   });
@@ -24,15 +25,17 @@ function connectWebSocket() {
   });
 
   socket.addEventListener("error", (event) => {
+    console.error("WebSocket error:", event);
     socket.close();
   });
 }
 
 function scheduleReconnect() {
-  if (reconnectTimer) return;
+  if (reconnectTimer) return; // Prevent duplicate timers
 
   const delay = Math.min(2000 * Math.pow(2, reconnectAttempts), maxReconnectDelay);
-  
+  console.warn(`WebSocket disconnected. Reconnecting in ${delay / 1000} seconds...`);
+
   reconnectTimer = setTimeout(() => {
     reconnectAttempts++;
     reconnectTimer = null;
@@ -52,7 +55,9 @@ function playAudio(audioUrl) {
 }
 
 document.addEventListener("click", () => {
-  audio.play();
+  audio.play().then(() => {
+    console.log("Audio unlocked for autoplay.");
+  }).catch(err => console.warn("Autoplay still restricted:", err));
 }, { once: true });
 
 connectWebSocket();
